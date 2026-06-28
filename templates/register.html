@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#fc466b,#3f5efb);
+    padding:20px;
+}
+
+.container{
+    width:380px;
+    padding:30px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    color:white;
+}
+
+.container h2{
+    text-align:center;
+    margin-bottom:20px;
+    font-size:28px;
+}
+
+.input-box{
+    margin-bottom:15px;
+}
+
+.input-box input,
+.input-box select{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    background:rgba(255,255,255,0.2);
+    color:white;
+    font-size:15px;
+}
+
+.input-box input::placeholder{
+    color:#eee;
+}
+
+.input-box select option{
+    color:black;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    color:#3f5efb;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#e6e6e6;
+}
+
+.link{
+    margin-top:18px;
+    text-align:center;
+}
+
+.link a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.link a:hover{
+    text-decoration:underline;
+}
+
+.flash{
+    text-align:center;
+    margin-bottom:15px;
+    color:#b7ffb3;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Create Account</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('register') }}" method="POST">
+
+        <div class="input-box">
+            <input type="text" name="username" placeholder="Full Name" required>
+        </div>
+
+        <div class="input-box">
+            <select name="bload" required>
+                <option value="" disabled selected>Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+
+        <div class="input-box">
+            <input type="date" name="dob" required>
+        </div>
+
+        <div class="input-box">
+            <input type="tel" name="number" placeholder="Phone Number" required>
+        </div>
+
+        <div class="input-box">
+            <input type="email" name="email" placeholder="Email Address" required>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder="Create Password" required>
+        </div>
+
+        <div class="input-box">
+            <input type="text" name="loc" placeholder="City" required>
+        </div>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div class="link">
+        Already have account?
+        <a href="{{ url_for('login') }}">Login</a>
+    </div>
+
+</div>
+
+</body>
+</html>

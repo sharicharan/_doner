@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#6a11cb,#2575fc);
+}
+
+.container{
+    width:350px;
+    padding:30px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    color:white;
+}
+
+.container h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:28px;
+}
+
+.input-box{
+    margin-bottom:18px;
+}
+
+.input-box input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    background:rgba(255,255,255,0.2);
+    color:white;
+    font-size:15px;
+}
+
+.input-box input::placeholder{
+    color:#eee;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    color:#2575fc;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#e6e6e6;
+}
+
+.link{
+    margin-top:18px;
+    text-align:center;
+}
+
+.link a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.link a:hover{
+    text-decoration:underline;
+}
+
+.flash{
+    text-align:center;
+    margin-bottom:15px;
+    color:#ffb3b3;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Login</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('login') }}" method="POST">
+
+        <div class="input-box">
+            <input type="email" name="username" placeholder="Enter Email" required>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder="Enter Password" required>
+        </div>
+
+        <button type="submit">Login</button>
+
+    </form>
+
+    <div class="link">
+        Don't have account?
+        <a href="{{ url_for('register') }}">Register</a>
+    </div>
+
+</div>
+
+</body>
+</html>

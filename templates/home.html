@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Blood Donation</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+body{
+    background:#111;
+    color:white;
+    min-height:100vh;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+    background:#1c1c1c;
+}
+
+.logo{
+    font-size:28px;
+    color:red;
+    font-weight:bold;
+}
+
+.user{
+    font-size:20px;
+}
+
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:red;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:darkred;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+    margin-top:40px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th, td{
+    border:1px solid white;
+    padding:15px;
+    text-align:center;
+}
+
+th{
+    background:red;
+}
+
+tr:nth-child(even){
+    background:#222;
+}
+
+.heading{
+    text-align:center;
+    font-size:35px;
+    margin-top:20px;
+    color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+    <div class="logo">
+        Blood Donation
+    </div>
+
+    <div class="user">
+        Welcome {{ user.name }}
+    </div>
+
+    <button onclick="addDonor()">
+        Add Donor
+    </button>
+
+</nav>
+
+
+<h1 class="heading">
+    Donors List
+</h1>
+
+
+<div class="container">
+<div  class="filter ">
+     <select name="Location" id="loc" onchange="filter_handle()">
+        <option value="location" disabled selected>location</option>
+        <option value="Tanuku">Tanuku</option>
+        <option value="bhimavaram">bhimavaram</option>
+     </select>
+      <select name="BloodGroup" id="bt" onchange="filter_handle()">
+        <option value="BloodGroup" disabled selected>BloodGroup</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+     </select>
+
+</div>
+<table>
+
+<thead>
+
+<tr>
+
+    <th>Name</th>
+
+    <th>Blood Group</th>
+
+    <th>Phone</th>
+
+    <th>Location</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="donors-table-body">
+
+{% for d in donors %}
+
+<tr>
+
+    <td>{{ d.name }}</td>
+
+    <td>{{ d.blood_type }}</td>
+
+    <td>{{ d.number }}</td>
+
+    <td>{{ d.loc }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<script>
+
+function addDonor(){
+
+    let choice = confirm("Do you want to become donor?");
+
+    if(choice){
+
+        fetch('/process',{
+
+            method:'POST',
+
+            headers:{
+                'Content-Type':'application/json'
+            },
+
+            body:JSON.stringify({
+
+                email:"{{ user.email }}"
+
+            })
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if(data.success){
+
+                alert("Successfully Added As Donor!");
+
+                location.reload();
+
+            }
+            else{
+
+                alert("Failed To Add Donor!");
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Something Went Wrong!");
+
+        });
+
+    }
+
+}
+
+function updateDonorTable(donors) {
+    const tbody = document.getElementById("donors-table-body");
+    tbody.innerHTML = donors.map(d => `
+        <tr>
+            <td>${d.name}</td>
+            <td>${d.blood_type}</td>
+            <td>${d.number}</td>
+            <td>${d.loc}</td>
+        </tr>
+    `).join("");
+}
+
+function filter_handle(){
+    console.log("Filter function called");
+    const loc = document.getElementById("loc").value;
+    const bt = document.getElementById("bt").value;
+    const payload = {};
+
+    if (loc !== "location") {
+        payload.loc = loc;
+    }
+    if (bt !== "BloodGroup") {
+        payload.bt = bt;
+    }
+
+    if (!payload.loc && !payload.bt) {
+        alert("Please select a location or blood group to filter.");
+        return;
+    }
+
+    fetch("/filter", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        if (data.donors && data.donors.length > 0) {
+            updateDonorTable(data.donors);
+        } else {
+            alert("Filter returned no donor data.");
+        }
+    })
+    .catch(er => {
+        console.log(er);
+        alert("Something went wrong while filtering.");
+    });
+}
+
+</script>
+
+</body>
+
+</html>
